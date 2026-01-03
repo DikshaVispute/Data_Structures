@@ -1,4 +1,4 @@
-// Doubly Circular
+//Doubly Circular
 
 #include<iostream>
 using namespace std;
@@ -31,48 +31,208 @@ class DoublyCL
 
         void InsertFirst(int no)
         {
+            PNODE newn = NULL;
+            newn = new NODE;
+
+            newn->data = no;
+            newn->next = NULL;
+            newn->prev = NULL;
+
+            if((this->first == NULL) && (this->last == NULL))
+            {
+                this->first = newn;
+                this->last = newn;
+            }
+            else
+            {
+                newn->next = this->first;
+                this->first->prev = newn;
+                this->first = newn;
+            }
             
+            this->last->next = this->first;
+            this->first->prev = this->last;
+
+            this->iCount++;
         }
 
         void InsertLast(int no)
         {
-            
-        }
+            PNODE newn = NULL;
+            newn = new NODE;
 
-        void InsertAtPos(int no, int pos)
-        {
+            newn->data = no;
+            newn->next = NULL;
+            newn->prev = NULL;
+
+            if((this->first == NULL) && (this->last == NULL))
+            {
+                this->first = newn;
+                this->last = newn;
+            }
+            else
+            {
+                this->last->next = newn;
+                newn->prev = this->last;
+                this->last = newn;
+            }
             
+            this->last->next = this->first;
+            this->first->prev = this->last;
+
+            this->iCount++;
         }
 
         void DeleteFirst()
         {
-            
+            if(this->iCount == 0)
+            {
+                return;
+            }
+            else if(this->first == this->last)
+            {
+                delete this->first;
+                this->first = NULL;
+                this->last = NULL;
+            }
+            else
+            {
+                this->first = this->first->next;
+                delete  this->last->next;
+            }
+
+            this->last->next = this->first;
+            this->first->prev = this->last;
+
+            this->iCount--;
         }
 
         void DeleteLast()
         {
-            
-        }
+            if(this->iCount == 0)
+            {
+                return;
+            }
+            else if(this->first == this->last)
+            {
+                delete this->first;
+                this->first = NULL;
+                this->last = NULL;
+            }
+            else
+            {
+                this->last = this->last->prev;
+                delete this->last->next;
+            }
 
-        void DeleteAtPos(int pos)
-        {
-            
+            this->last->next = this->first;
+            this->first->prev = this->last;
+
+            this->iCount--;
         }
 
         void Display()
         {
-            while(first != NULL)
-            {
-                cout<<" | " << first->data << " | -> ";
-                first = first->next;
-            }
+            PNODE temp = NULL;
+            temp = this->first;
 
-            cout<< "NULL\n";
+            cout<<"<=>";
+
+            do
+            {
+                cout<<" | " << temp->data << " | <=> ";
+                temp = temp->next;
+
+            }while(temp != this->last->next);
+
+            cout<<"\n";
         }
 
         int Count()
         {
             return iCount;
+        }
+
+        void InsertAtPos(int no, int pos)
+        {
+            PNODE temp = NULL;
+            PNODE newn = NULL;
+            int iCnt = 0;
+
+            if((pos < 1) || (pos > this->iCount+1))
+            {
+                cout<<"Invalid Position\n";
+                return;
+            }
+
+            if(pos == 1)
+            {
+                this->InsertFirst(no);
+            }
+            else if(pos == iCount+1)
+            {
+                this->InsertLast(no);
+            }
+            else
+            {
+                temp = this->first;
+                newn = new NODE;
+
+                newn->data = no;
+                newn->next = NULL;
+                newn->prev = NULL;
+
+                for(iCnt = 1; iCnt < pos-1; iCnt++)
+                {
+                    temp = temp->next;
+                }
+
+                newn->next = temp->next;
+                newn->next->prev = newn;
+                
+                temp->next = newn;
+                newn->prev = temp;
+
+                this->iCount++;
+            }
+        }
+
+        void DeleteAtPos(int pos)
+        {
+            PNODE temp = NULL;
+            PNODE target = NULL;
+            int iCnt = 0;
+
+            if((pos < 1) || (pos > this->iCount))
+            {
+                cout<<"Invalid Position\n";
+                return;
+            }
+
+            if(pos == 1)
+            {
+                this->DeleteFirst();
+            }
+            else if(pos == iCount)
+            {
+                this->DeleteLast();
+            }
+            else
+            {
+                temp = this->first;
+
+                for(iCnt = 1; iCnt < pos-1; iCnt++)
+                {
+                    temp = temp->next;
+                }
+
+                target = temp->next;
+                temp->next = target->next;
+
+                temp->next->prev = temp;
+
+                this->iCount--;
+            }
         }
 };
 

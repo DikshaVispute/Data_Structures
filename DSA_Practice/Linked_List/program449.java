@@ -33,42 +33,196 @@ class DoublyCL
 
     public void InsertFirst(int no)
     {
+        node newn = null;
+        newn = new node(no);
 
+        if((this.first == null) && (this.last == null))
+        {
+            this.first = newn;
+            this.last = newn;
+        }
+        else
+        {
+            newn.next = this.first;
+            this.first.prev = newn;
+            this.first = newn;
+        }
+
+        this.last.next = this.first;
+        this.first.prev = this.last;
+
+        this.iCount++;
     }
 
     public void InsertLast(int no)
     {
-        
-    }
+        node newn = null;
+        newn = new node(no);
 
-    public void InsertAtPos(int no,int pos)
-    {
-        
+        if((this.first == null) && (this.last == null))
+        {
+            this.first = newn;
+            this.last = newn;
+        }
+        else
+        {
+            this.last.next = newn;
+            newn.prev = this.last;
+            this.last = newn;
+        }
+
+        this.last.next = this.first;
+        this.first.prev = this.last;
+
+        this.iCount++;
     }
 
     public void DeleteFirst()
     {
-        
+        if(iCount == 0)
+        {
+            return;
+        }
+        else if(this.first == this.last)
+        {
+            this.first = null;
+        }
+        else
+        {
+            this.first = this.first.next;
+            this.last.next = null;
+
+            this.last.next = this.first;
+            this.first.prev = this.last;
+        }
+
+        System.gc();
+        this.iCount--;
     }
 
     public void DeleteLast()
     {
-        
-    }
+        node temp = null;
 
-    public void DeleteAtPos(int pos)
-    {
-        
+        if(iCount == 0)
+        {
+            return;
+        }
+        else if(this.first == this.last)
+        {
+            this.first = null;
+        }
+        else
+        {
+            this.last = this.last.prev;
+            this.first.prev = null;
+
+            this.last.next = this.first;
+            this.first.prev = this.last;
+        }
+
+        System.gc();
+        this.iCount--;
     }
 
     public void Display()
     {
+        node temp = null;
+        temp = this.first;
 
+        System.out.print("<=>");
+
+        do 
+        {
+            System.out.print("| "+temp.data+" |<=>");
+            temp = temp.next;
+
+        }while(temp != this.last.next);
+
+        System.out.println();
     }
 
     public int Count()
     {
         return this.iCount;
+    }
+
+    public void InsertAtPos(int no,int pos)
+    {
+        node temp = null;
+        node newn = null;
+        int iCnt = 0;
+
+        if((pos < 1) || (pos > iCount+1))
+        {
+            System.out.println("Invalid output");
+            return;
+        }
+
+        if(pos == 1)
+        {
+            this.InsertFirst(no);
+        }
+        else if(pos == iCount+1)
+        {
+            this.InsertLast(no);
+        }
+        else
+        {
+            temp = this.first;
+            newn = new node(no);
+
+            for(iCnt = 1; iCnt < pos-1; iCnt++)
+            {
+                temp = temp.next;
+            }
+
+            newn.next = temp.next;
+            newn.next.prev = newn;
+
+            temp.next = newn;
+            newn.prev = temp;
+
+            this.iCount++;
+        }
+    }
+
+    public void DeleteAtPos(int pos)
+    {
+        node temp = null;
+        int iCnt = 0;
+        
+        if((pos < 1) || (pos > iCount))
+        {
+            System.out.println("Invalid output");
+            return;
+        }
+
+        if(pos == 1)
+        {
+            this.DeleteFirst();
+        }
+        else if(pos == iCount)
+        {
+            this.DeleteLast();
+        }
+        else
+        {
+            temp = this.first;
+
+            for(iCnt = 1; iCnt < pos-1; iCnt++)
+            {
+                temp = temp.next;
+            }
+
+            temp.next = temp.next.next;
+            temp.next.prev = null;
+
+            temp.next.prev = temp;
+
+            System.gc();
+            iCount--;
+        }
     }
 }
 
